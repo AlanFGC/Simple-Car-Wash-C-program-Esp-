@@ -69,6 +69,7 @@ void hacerCita(void);
 void mostrarCitas(void);
 //reportes
 void ganancias(void);
+void servicios(void);
 //extras
 int verificarId(int);
 /**
@@ -227,9 +228,9 @@ void menuReportes(void)
 {
 
     short int opcionMenu;
+    system("clear");
     do
     {
-        system("clear");
         do
         {
             printf("Selecciona un opción del menú (1-4):\n");
@@ -249,12 +250,15 @@ void menuReportes(void)
             break;
         case 2:
             printf("Citas.\n");
+            mostrarCitas();
             break;
         case 3:
             printf("Programa de lealtad.\n");
+            servicios();
             break;
         case 4:
             printf("Regresar al menú principal.\n");
+            return;
             break;
         default:
             printf("Input Invalido");
@@ -535,8 +539,7 @@ void hacerCita(void)
         }
 
     } while (horario < 10 || horario > 15);
-    //meter lo del cliente.   mejor esto lo dejamos hasta el final porque hay que conectarlo con clientes.c
-
+    system("clear");
     //Cobrar Monto. Hay que poner los precios y los paquetes y que el usuario eliga uno paquete.
     do
     {
@@ -595,7 +598,7 @@ void hacerCita(void)
             camioneta = -1;
         }
     } while (camioneta < 0 || camioneta > 1);
-
+    system("clear");
     do
     {
         printf("\nextras:\n");
@@ -612,6 +615,7 @@ void hacerCita(void)
     printf("El monto total es igual a $ %d\n", monto);
     printf("La cita ha sido agendada.\n");
     //Salvar toda la info en al struct.
+    diaCita = diaCita - 1;
     regClientes[idCliente].servicios++;
     regCitas[diaCita].numCitas += 1;
     regCitas[diaCita].idCliente[regCitas[diaCita].numCitas] = idCliente;
@@ -640,15 +644,15 @@ void mostrarCitas(void)
     } while (diaCita < 1 || diaCita > 5);
 
     //usar un for para imprimir las citas por día.
-    printf("Estas son las citas del dia %s\n", dias[diaCita - 1]);
+    printf("Estas son las citas del día %s\n", dias[diaCita - 1]);
 
     for (i = 0; i < 5; i++)
     {
-        if (regCitas[diaCita].idCliente[i] > 0)
+        if (regCitas[diaCita - 1].idCliente[i] > 0)
         {
-            printf("ID: %d\t", regCitas[diaCita].idCliente[i]);
-            printf("horario: %d\t", regCitas[diaCita].hora[i]);
-            printf("El monto a pagar es: %d\n\n", regCitas[diaCita].monto[i]);
+            printf("ID: %d\t", regCitas[diaCita - 1].idCliente[i]);
+            printf("horario: %d\t", regCitas[diaCita - 1].hora[i]);
+            printf("El monto a pagar es: %d\n\n", regCitas[diaCita - 1].monto[i]);
         }
     }
     return;
@@ -688,18 +692,36 @@ int verificarId(int idIngresado)
 void ganancias(void)
 {
     int total = 0;
+    int totalNeto = 0;
     //5 dias a la semana.
-    for (int i = 0; i < 5; i++)
+    for (int j = 0; j < 5; j++)
     {
-
-        for (int j = 0; j < 5; j++)
+        total = 0;
+        for (int i = 0; i < 5; i++)
         {
-            if (regCitas[i].idCliente[j] > 0)
-            {
-                total += regCitas[1].monto[j];
-            }
+            total += regCitas[j].monto[i];
+        }
+        printf("Total día %d es igual a = %d\n\n", j + 1, total);
+        totalNeto += total;
+    }
+    printf("\nEl total de ganancias en la semana es igual a = %d\n", totalNeto);
+    return;
+}
+/** 
+ * @brief Procedimiento que muestra los servicios de la semana.
+ * @Param void
+ */
+void servicios(void)
+{
+    int numId = asignarId();
+    system("clear");
+    for (int i = 0; i < numId; i++)
+    {
+        if (regClientes[i].numId > 0)
+        {
+            printf("ID:%d\t%s\t\t\tServicios(%hd/3)\n", regClientes[i].numId, regClientes[i].nombreCliente, regClientes[i].servicios);
         }
     }
-    printf("\nEl total de ganancias en la semana es igual a = %d\n", total);
+    printf("\n\n");
     return;
 }
