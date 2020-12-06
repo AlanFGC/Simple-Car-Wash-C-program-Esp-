@@ -16,12 +16,36 @@
 #include <stdlib.h>
 #include <time.h>
 #include "libFundamentos.h"
+#define TAM_Lista 100
+
+/** @brief se declaran las estructuras de datos */
+typedef struct Cliente
+{
+    int numId;
+    char nombreCliente[255];
+    char marca[10];
+    char modelo[25];
+    char color[25];
+    char placas[10];
+    short int tipo;
+    short int servicios;
+} typeCliente;
+
+/** @brief Se declaran las variables globales */
+typeCliente regClientes[TAM_Lista];
 
 /** @brief Prototipos de funcion */
 void mostrarMenuP(void);
 void menuCatalogo(void);
 void menuClientes(void);
 void menuReportes(void);
+//clientes
+void agregarCliente(void);
+void mostrarClientes(void);
+int asignarId(void);
+void eliminarCliente(void);
+void editarCliente(void);
+//citas
 
 /**
  * @fn Funcion del programa principal.
@@ -129,11 +153,10 @@ void menuCatalogo(void)
 
 void menuClientes(void)
 {
-
+    system("clear");
     short int opcionMenu;
     do
     {
-        system("clear");
         do
         {
             printf("Selecciona un opción del menú (1-5):\n");
@@ -150,15 +173,19 @@ void menuClientes(void)
         {
         case 1:
             printf("Mostrar.\n");
+            mostrarClientes();
             break;
         case 2:
             printf("Crear.\n");
+            agregarCliente();
             break;
         case 3:
             printf("Editar.\n");
+            editarCliente();
             break;
         case 4:
             printf("Borrar.\n");
+            eliminarCliente();
             break;
         case 5:
             printf("Regresar.\n");
@@ -209,5 +236,164 @@ void menuReportes(void)
             return;
         }
     } while (opcionMenu != 4);
+    return;
+}
+
+void mostrarClientes(void)
+{
+    int numId = asignarId();
+    system("clear");
+    for (int i = 0; i < numId; i++)
+    {
+        if (regClientes[i].numId > 0)
+        {
+            printf("ID:%d\t%s\t%s\t%s\t%s\t%s\t\t\tServicios(%hd/3)\t", regClientes[i].numId, regClientes[i].nombreCliente, regClientes[i].marca, regClientes[i].modelo, regClientes[i].color, regClientes[i].placas, regClientes[i].servicios);
+            if (regClientes[i].tipo == 1)
+            {
+                printf("Tipo: automóvil\n");
+            }
+            else if (regClientes[i].tipo == 2)
+            {
+                printf("Tipo: camioneta\n");
+            }
+            else if (regClientes[i].tipo == 3)
+            {
+                printf("Tipo: Camión\n");
+            }
+        }
+    }
+    printf("\n\n");
+    return;
+}
+/** 
+ * @brief Procedimiento que agrega un cliente
+ * @Param voids
+ */
+void agregarCliente(void)
+{
+    char opcion;
+    int id = 0;
+    system("clear");
+    id = asignarId();
+    printf(" Id nuevo cliente = %d\n", id);
+    do
+    {
+        regClientes[id] = (typeCliente){.numId = id};
+        printf("Ingresa el nombre del cliente.\n");
+        scanf("%s", regClientes[id].nombreCliente);
+        printf("Ingresa la marca de su vehículo.\n");
+        scanf("%s", regClientes[id].marca);
+        printf("Ingresa el modelo de su vehículo\n");
+        scanf("%s", regClientes[id].modelo);
+        printf("Ingresa el color de su vehículo\n");
+        scanf("%s", regClientes[id].color);
+        printf("Ingresa las placas de su vehículo\n");
+        scanf("%s", regClientes[id].placas);
+        system("clear");
+        do
+        {
+            printf("Ingresa el tipo vehículo\n\t1 = automóvil\n\t2 = Camioneta\n\t3= Camión\n");
+            scanf("%hd", &regClientes[id].tipo);
+            limpiarBuffer();
+        } while (regClientes[id].tipo < 1 || regClientes[id].tipo > 3);
+
+        system("clear");
+        printf("%s\t%s\t%s\t%s\t%s\n", regClientes[id].nombreCliente, regClientes[id].marca, regClientes[id].modelo, regClientes[id].color, regClientes[id].placas);
+        if (regClientes[id].tipo == 1)
+        {
+            printf("Tipo = automóvil\n");
+        }
+        else if (regClientes[id].tipo == 2)
+        {
+            printf("Tipo = camioneta\n");
+        }
+        else if (regClientes[id].tipo == 3)
+        {
+            printf("Tipo = Camión\n");
+        }
+        printf("¿La información es correcta? ( s / n )\n");
+        scanf(" %c", &opcion);
+        limpiarBuffer();
+    } while (opcion != 's');
+    return;
+}
+/** 
+ * @brief Procedimiento que asigna un nuevo id
+ * @Param void
+ */
+int asignarId(void)
+{
+    int newId = 0;
+    for (int i = 0; i < TAM_Lista; i++)
+    {
+        if (newId < regClientes[i].numId)
+        {
+            newId = regClientes[i].numId;
+        }
+    }
+    newId++;
+    return newId;
+}
+/** 
+ * @brief Procedimiento elimina un cliente existente
+ * @Param void
+ */
+void eliminarCliente(void)
+{
+    mostrarClientes();
+    int idCliente = 0;
+    do
+    {
+        printf("Ingresa el número ID del cliente que deseas eliminar\n\n");
+        scanf("%d", &idCliente);
+    } while (idCliente <= 0);
+    if (regClientes[idCliente].numId > 0)
+    {
+        regClientes[idCliente] = (typeCliente){.numId = 0, .marca = "\0", .modelo = "\0", .color = "\0", .placas = "\0", .tipo = 0, .servicios = 0};
+        printf("Se ha eliminado al cliente %d existosamente.\n", idCliente);
+    }
+    else
+    {
+        printf("No se ha podiddo encotnrar al cliente %d , intente de nuevo.\n", idCliente);
+    }
+    return;
+}
+/** 
+ * @brief Procedimiento edita un cliente existente.
+ * @Param void
+ */
+void editarCliente(void)
+{
+    int id = 0;
+    mostrarClientes();
+    printf("Ingresa el cliente que desees editar:");
+    scanf("%d", &id);
+    if (regClientes[id].numId == 0)
+    {
+        system("clear");
+        printf("\nLo siento, cliente no encontrado.\n");
+        return;
+    }
+    else
+    {
+        printf("Ingresa el nombre del cliente. Nombre anterior es: %s\n", regClientes[id].nombreCliente);
+        scanf("%s", regClientes[id].nombreCliente);
+        printf("Ingresa la marca de su vehículo. La marca anterior es: %s\n", regClientes[id].marca);
+        scanf("%s", regClientes[id].marca);
+        printf("Ingresa el modelo de su vehículo. El modelo anterior es: %s\n", regClientes[id].modelo);
+        scanf("%s", regClientes[id].modelo);
+        printf("Ingresa el color de su vehículo. El color anterior es: %s\n", regClientes[id].color);
+        scanf("%s", regClientes[id].color);
+        printf("Ingresa las placas de su vehículo. Las placas anteriores son: %s\n", regClientes[id].placas);
+        scanf("%s", regClientes[id].placas);
+        do
+        {
+            printf("Ingresa el tipo vehículo\n\t1 = automóvil\n\t2 = Camioneta\n\t3= Camión\n");
+            scanf("%hd", &regClientes[id].tipo);
+            limpiarBuffer();
+        } while (regClientes[id].tipo < 1 || regClientes[id].tipo > 3);
+    }
+    system("clear");
+    printf("En hora buena, el perfil del usuario %s ha sido modificado.\n", regClientes[id].nombreCliente);
     return;
 }
