@@ -687,14 +687,19 @@ int verificarId(int idIngresado)
  */
 void ganancias(void)
 {
-    int total;
+    int total = 0;
+    //5 dias a la semana.
     for (int i = 0; i < 5; i++)
     {
-        if (regCitas[1].idCliente[i] > 0)
+
+        for (int j = 0; j < 5; j++)
         {
-            printf("ID: %d\t", regCitas[1].idCliente[i]);
-            printf("horario: %d\t", regCitas[1].hora[i]);
-            printf("El monto a pagar es: %d\n\n", regCitas[1].monto[i]);
+            if (regCitas[i].idCliente[j] > 0)
+            {
+                total += regCitas[1].monto[j];
+            }
         }
     }
+    printf("\nEl total de ganancias en la semana es igual a = %d\n", total);
+    return;
 }
