@@ -9,7 +9,7 @@
  *@author Desarrollador que hizo la última modificación
  * Alan Garcia
  *@date Fecha de última modificación
- * 5 de Diciembre.
+ * 6 de Diciembre.
 */
 
 #include <stdio.h>
