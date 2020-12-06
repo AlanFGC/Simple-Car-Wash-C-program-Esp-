@@ -24,8 +24,8 @@ typedef struct Cliente
 {
     int numId;
     char nombreCliente[255];
-    char marca[10];
     char modelo[25];
+    char marca[10];
     char color[25];
     char placas[10];
     short int tipo;
